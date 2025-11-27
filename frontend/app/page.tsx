@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import QuestionTypeDropdown from "./QuestionTypeDropdown";
 
 export default function Home() {
   const [fields, setFields] = useState([{ value: "" }]);
+  const [questionType, setQuestionType] = useState("");
 
   const addField = () => {
     setFields([...fields, { value: "" }]);
@@ -21,8 +23,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full bg-gray-100 flex justify-center items-start py-10">
-      <div className="flex gap-8">
-        <div className="flex flex-col space-y-6 w-full max-w-xl">
+      <div className="flex gap-8 w-2/3">
+        <div className="flex flex-col space-y-6 w-full">
           <form
             onSubmit={handleSubmit}
             className="p-6 bg-white shadow-lg rounded-lg w-full space-y-4"
@@ -44,16 +46,42 @@ export default function Home() {
           <div className="p-6 bg-white shadow-lg rounded-lg w-full space-y-3">
             <div className="flex flex-col space-y-3 rounded">
               {fields.map((field, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  value={field.value}
-                  onChange={(e) => handleChange(index, e)}
-                  className="border p-3 rounded w-full"
-                  placeholder="Untitled Question"
-                />
+                <div key={index} className="space-y-3">
+                  {/* Question + Dropdown */}
+                  <div className="flex space-x-4">
+                    <input
+                      type="text"
+                      value={field.value}
+                      onChange={(e) => handleChange(index, e)}
+                      className="border p-3 rounded w-full text-black focus:outline-blue-500"
+                      placeholder="Untitled Question"
+                    />
+
+                    <QuestionTypeDropdown setQuestionType={setQuestionType} />
+                  </div>
+
+                  {/* Conditional Rendering for Options */}
+                  {questionType === "multiple-choice" ? (
+                    <div className=" flex flex-col p-3 rounded text-black">
+                      <div>
+                        <input type="radio" value="option1" />
+                        <input className="ml-2 text-black focus:outline-none" placeholder="option"/>
+                      </div>
+                      <div>
+                        <input type="radio" />
+                        <label className="ml-2">Option 2</label>
+                      </div>
+                    </div>
+                  ) : questionType === "checkboxes" ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <input type="checkbox" />
+                      <label className="text-black">Option 1</label>
+                    </div>
+                  ) : null}
+                </div>
               ))}
             </div>
+
             <button
               type="submit"
               className="px-4 py-2 bg-green-600 text-white rounded"
