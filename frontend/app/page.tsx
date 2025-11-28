@@ -4,13 +4,25 @@ import QuestionTypeDropdown from "./QuestionTypeDropdown";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import ToggleButton from "./ToggleButton";
 
+interface Field {
+  value: string;
+  type: string;
+  options: string[];
+  required: boolean;
+}
+
 export default function Home() {
   const [fields, setFields] = useState([
-    { value: "", type: "short-answer", options: [] },
+    { value: "", type: "short-answer", options: [],required:false },
   ]);
+  const [formTitle, setFormTitle] = useState("");
+  const [formDescription, setFormDescription] = useState("");
 
   const addField = () => {
-    setFields([...fields, { value: "", type: "short-answer", options: [] }]);
+    setFields([
+      ...fields,
+      { value: "", type: "short-answer", options: [], required: false },
+    ]);
   };
 
   const handleChange = (index: number, e: any) => {
@@ -27,43 +39,63 @@ export default function Home() {
 
   const addOption = (index: number) => {
     const updated = [...fields];
-    // updated[index].options.push("");
+    updated[index].options = updated[index].options ?? [];
+    updated[index].options.push("");
     setFields(updated);
   };
 
+  const toggleRequired = (index: number) => {
+    const updated = [...fields];
+    updated[index].required = !updated[index].required;
+    setFields(updated);
+  };
+
+  const removeField = (index: number) => {
+    const updated = [...fields];
+    updated.splice(index, 1);
+    setFields(updated);
+  };
   const updateOptionText = (i: number, optionIndex: number, text: string) => {
     const updated = [...fields];
-    // updated[i].options[optionIndex] = text;
+    updated[i].options[optionIndex] = text;
     setFields(updated);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Final Form:", fields);
+
+    const finalData = {
+      title: formTitle,
+      description: formDescription,
+      questions: fields,
+    };
+
+    console.log("Final Output:", finalData);
   };
 
   return (
     <div className="min-h-screen w-full bg-gray-100 flex justify-center py-10">
       <div className="flex gap-8 w-2/3">
         {/* LEFT SECTION */}
-        <div className="flex flex-col space-y-6 w-full border-t-8 border-violet-700 rounded-t-lg">
+        <div className="flex flex-col space-y-6 w-full border-t-10 border-violet-700 rounded-t-lg">
           {/* Title Section */}
-          <form
-            onSubmit={handleSubmit}
-            className="p-6 bg-white shadow-lg rounded-b-lg space-y-4"
-          >
+          <div className="p-6 bg-white shadow-lg rounded-b-lg space-y-4">
             <input
               type="text"
-              className=" p-1 text-3xl placeholder-black text-black outline-none w-full "
+              value={formTitle}
+              onChange={(e) => setFormTitle(e.target.value)}
+              className="p-1 text-3xl placeholder-black text-black outline-none w-full"
               placeholder="Untitled Form"
             />
 
             <input
               type="text"
+              value={formDescription}
+              onChange={(e) => setFormDescription(e.target.value)}
               className="outline-none p-1 text-sm text-black w-full"
               placeholder="Form Description"
             />
-          </form>
+          </div>
 
           {/* Dynamic Questions List */}
           <div className="p-6 bg-white shadow-lg rounded-lg space-y-3">
@@ -93,7 +125,7 @@ export default function Home() {
                         <input type="radio" disabled />
                         <input
                           type="text"
-                          className="border p-2 rounded w-full"
+                          className="p-2 rounded w-full text-black outline-none"
                           placeholder={`Option ${optIdx + 1}`}
                           value={option}
                           onChange={(e) =>
@@ -105,7 +137,7 @@ export default function Home() {
 
                     <button
                       onClick={() => addOption(index)}
-                      className="text-blue-600 text-sm hover:underline w-fit"
+                      className="text-blue-600 text-sm hover:underline w-fit hover:cursor-pointer"
                     >
                       + Add option
                     </button>
@@ -124,11 +156,15 @@ export default function Home() {
                     type="text"
                     className="border-b border-gray-400 p-1 text-sm text-black outline-none w-2/4"
                     placeholder="Short answer text"
+                    disabled
                   />
                 )}
                 <div className="space-x-8 flex items-center justify-end w-full border-t border-gray-300 mt-3 p-4 ">
                   {/* Left: Trash Icon */}
-                  <div className="flex items-center w-1/30 text-gray-500">
+                  <div
+                    className="flex items-center w-1/30 text-gray-500"
+                    onClick={() => removeField(index)}
+                  >
                     <TrashIcon />
                   </div>
                   <div className="w-[1px] h-8 bg-gray-400"></div>
@@ -136,18 +172,22 @@ export default function Home() {
                   {/* Right: Toggle + Required Text */}
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 text-normal">Required</span>
-                    <ToggleButton />
+                    <ToggleButton
+                      isOn={field.required}
+                      onToggle={() => toggleRequired(index)}
+                    />
                   </div>
                 </div>
               </div>
             ))}
-
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-600 text-white rounded"
-            >
-              Submit
-            </button>
+            {fields.length > 0 && (
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-green-600 text-white rounded"
+              >
+                Submit
+              </button>
+            )}
           </div>
         </div>
 

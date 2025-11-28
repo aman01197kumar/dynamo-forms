@@ -37,7 +37,7 @@ export default function QuestionTypeDropdown({
   }, [selected]);
 
   return (
-    <div className="w-60">
+    <div className="w-60 z-10">
       <Listbox value={selected} onChange={setSelected}>
         <div className="relative">
           {/* Button */}
