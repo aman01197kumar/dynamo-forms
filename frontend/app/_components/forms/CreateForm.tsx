@@ -81,7 +81,7 @@ export default function CreateForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formTitle.trim()||!formDescription.trim()) {
+    if (!formTitle.trim() || !formDescription.trim()) {
       alert("Form title cannot be empty.");
       return;
     }
@@ -98,10 +98,9 @@ export default function CreateForm() {
       questions: fields,
     };
 
-    const response = await axios.post('http://localhost:3000/api/form', finalData);
+    const response = await axios.post("/api/form", finalData);
 
-
-    console.log("Final Output:", response?.data)
+    alert(response?.data?.message);
   };
 
   return (
@@ -144,7 +143,7 @@ export default function CreateForm() {
                   />
 
                   <QuestionTypeDropdown
-                    setQuestionType={(type:any) =>
+                    setQuestionType={(type: any) =>
                       handleTypeChange(index, type)
                     }
                   />
