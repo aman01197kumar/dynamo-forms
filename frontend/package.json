@@ -11,10 +11,16 @@
   "dependencies": {
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
+<<<<<<< HEAD
     "mongoose": "^8.20.4",
     "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
+=======
+    "next": "16.0.10",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+>>>>>>> 659e0e3917b13c81cd471504132c5faffb428eca
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
