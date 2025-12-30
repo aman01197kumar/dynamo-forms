@@ -3,6 +3,7 @@ import { useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import QuestionTypeDropdown from "../utilites/dropdowns/QuestionTypeDropdown";
 import ToggleButton from "../utilites/buttons/ToggleButton";
+import axios from "axios";
 
 /* ✅ TYPES */
 type QuestionType = "short-answer" | "multiple-choice" | "checkboxes";
@@ -77,7 +78,7 @@ export default function CreateForm() {
     setFields(updated);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formTitle.trim()||!formDescription.trim()) {
@@ -90,13 +91,17 @@ export default function CreateForm() {
         return;
       }
     });
+
     const finalData = {
       title: formTitle,
       description: formDescription,
       questions: fields,
     };
 
-    console.log("Final Output:", finalData);
+    const response = await axios.post('http://localhost:3000/api/form', finalData);
+
+
+    console.log("Final Output:", response?.data)
   };
 
   return (
